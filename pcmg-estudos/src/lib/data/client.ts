@@ -24,6 +24,13 @@ export function getAuth(): AuthClient {
 
 let backend: Backend | null = null;
 export function getBackend(): Backend {
-  if (!backend) backend = E2E_MODE ? new MemoryBackend("pcmg-e2e-server") : new SupabaseBackend(supabase());
+  if (!backend) {
+    if (E2E_MODE) {
+      const mem = new MemoryBackend("pcmg-e2e-server");
+      // Gancho SOMENTE para testes automatizados: simula o servidor publicando dados do concurso.
+      (window as unknown as { __pcmgE2E?: unknown }).__pcmgE2E = { serverInsert: (t: string, rows: never[]) => mem.serverInsert(t as never, rows) };
+      backend = mem;
+    } else backend = new SupabaseBackend(supabase());
+  }
   return backend;
 }

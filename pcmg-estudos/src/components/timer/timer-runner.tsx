@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { useApp, useSettings } from "@/components/app/context";
+import { useStore } from "zustand";
+import { useApp, useSettings, useTable } from "@/components/app/context";
 import { BLOCK_LABEL, secondsByType } from "@/lib/domain/timer";
 import { useTimer } from "./timer-store";
 import { beep, systemNotify, vibrate } from "./alerts";
@@ -13,12 +14,16 @@ export function TimerRunner() {
   const timer = useTimer((s) => s.timer);
   const lastSave = useRef(0);
 
+  const sessions = useTable("study_sessions");
+  const serverLoaded = useStore(engine.store, (st) => st.serverLoaded);
   useEffect(() => {
     if (!timer) return;
-    // sessão foi concluída/excluída em outro aparelho: encerra o cronômetro local
-    const s = engine.row("study_sessions", timer.sessionId);
-    if (!s || s.status === "concluida") { if (!useTimer.getState().finishing) useTimer.getState().clear(); }
-  }, [timer, engine]);
+    // Sessão concluída (ou excluída, confirmado com o servidor) em outro aparelho: encerra o cronômetro local.
+    // Antes de falar com o servidor, a falta da sessão no cache NÃO apaga o cronômetro.
+    const s = sessions[timer.sessionId];
+    const gone = !s && serverLoaded;
+    if ((gone || s?.status === "concluida") && !useTimer.getState().finishing) useTimer.getState().clear();
+  }, [timer, sessions, serverLoaded]);
 
   useEffect(() => {
     const prefs = settings?.timer;

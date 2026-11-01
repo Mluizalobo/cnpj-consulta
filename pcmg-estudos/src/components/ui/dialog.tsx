@@ -16,7 +16,7 @@ export function Dialog({ open, onOpenChange, title, description, children, foote
         <D.Content
           className={cn(
             "fixed z-50 flex max-h-[92dvh] w-full flex-col border bg-surface shadow-pop focus:outline-none",
-            "bottom-0 left-0 rounded-t-2xl animate-slide-up sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:animate-scale-in",
+            "bottom-0 left-0 rounded-t-2xl animate-slide-up sm:inset-0 sm:m-auto sm:h-fit sm:rounded-2xl sm:animate-scale-in",
             size === "sm" ? "sm:max-w-md" : size === "lg" ? "sm:max-w-3xl" : "sm:max-w-xl",
           )}>
           <div className="flex items-start justify-between gap-3 border-b px-5 py-4">
