@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 247 248 246;
+  --surface: 255 255 255;
+  --surface-2: 241 243 240;
+  --border: 226 230 225;
+  --fg: 32 38 32;
+  --muted: 111 119 111;
+  --primary: 46 107 75;
+  --primary-fg: 255 255 255;
+  --primary-deep: 23 61 43;
+  --primary-soft: 232 240 233;
+  --alert: 196 98 66;
+  --alert-soft: 250 236 230;
+  --warn: 166 120 32;
+  --warn-soft: 248 240 220;
+  --ring: 46 107 75;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: 17 20 18;
+  --surface: 25 29 26;
+  --surface-2: 33 38 34;
+  --border: 45 52 46;
+  --fg: 229 234 229;
+  --muted: 152 162 153;
+  --primary: 104 170 132;
+  --primary-fg: 12 26 18;
+  --primary-deep: 23 61 43;
+  --primary-soft: 30 48 37;
+  --alert: 228 140 110;
+  --alert-soft: 56 36 30;
+  --warn: 214 172 92;
+  --warn-soft: 52 44 26;
+  --ring: 104 170 132;
+  color-scheme: dark;
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-bg text-fg antialiased;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible { @apply outline-none ring-2 ring-ring/60 ring-offset-2 ring-offset-bg; }
+  input, select, textarea { font-size: 16px; } /* evita zoom no iOS */
+}
+
+@layer utilities {
+  .tnum { font-variant-numeric: tabular-nums; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
