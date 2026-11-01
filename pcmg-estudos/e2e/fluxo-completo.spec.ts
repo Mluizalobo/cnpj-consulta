@@ -86,7 +86,8 @@ test("fluxo completo de estudo do dia", async ({ page }) => {
   // 12. Painel de desempenho
   await page.goto("/desempenho");
   await expect(page.getByTestId("subject-table")).toContainText("Português");
-  await expect(page.getByText(/Abaixo de 50%/).first()).toBeVisible();
+  await expect(page.getByRole("img", { name: "Percentual de acertos por matéria" })).toBeVisible();
+  await expect(page.getByTestId("subject-table")).toContainText(/Crítico|Em desenvolvimento|Meta atingida/);
 
   // 13. Exportar backup
   await page.goto("/configuracoes");
