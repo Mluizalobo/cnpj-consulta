@@ -130,6 +130,15 @@ describe("Banco de dados e RLS", () => {
     await expect(asUser(U1, () => db.query(`insert into public.question_attempts(user_id,selected_option,correct_option,is_correct,mode) values ($1,'A','A',true,'outro')`, [U1]))).rejects.toThrow(/check constraint/);
   });
 
+  it("videoaulas: cada usuária vê só a própria biblioteca e o link precisa ser https", async () => {
+    if (!available) return;
+    await asUser(U1, () => db.query(`insert into public.video_lessons(user_id,youtube_id,url,title) values ($1,'dQw4w9WgXcQ','https://www.youtube.com/watch?v=dQw4w9WgXcQ','Aula')`, [U1]));
+    const other = await asUser(U2, () => db.query(`select * from public.video_lessons`));
+    expect(other.rowCount).toBe(0);
+    await expect(asUser(U1, () => db.query(`insert into public.video_lessons(user_id,url,title) values ($1,'javascript:alert(1)','x')`, [U1]))).rejects.toThrow(/check constraint/);
+    await expect(asUser(U1, () => db.query(`insert into public.video_lessons(user_id,youtube_id,url,title) values ($1,'dQw4w9WgXcQ','https://youtu.be/dQw4w9WgXcQ','dup')`, [U1]))).rejects.toThrow(/duplicate key/);
+  });
+
   it("excluir a conta apaga os dados dela sem afetar a outra", async () => {
     if (!available) return;
     await db.query(`delete from auth.users where id=$1`, [U2]);

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Check, Play, RotateCw, Clock3, Sparkles, Plus } from "lucide-react";
+import { Check, Play, RotateCw, Clock3, Sparkles, Plus, Clapperboard } from "lucide-react";
 import { toast } from "sonner";
 import { useApp, useSubjects } from "@/components/app/context";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ import { useTimer } from "@/components/timer/timer-store";
 import { FinishDialog, type FinishTarget } from "@/components/timer/finish-dialog";
 import { useRouter } from "next/navigation";
 import { AdhocDialog } from "./adhoc-dialog";
+import { VideoSearchDialog, type VideoTarget } from "@/components/videos/search-dialog";
+import { useRows } from "@/components/app/context";
+import { nextTopicFor } from "@/components/videos/next-topic";
 
 export function DaySessions({ rows, isToday = true }: { rows: { item: DayItem; session: StudySession | undefined }[]; isToday?: boolean }) {
   const { actions } = useApp();
@@ -24,6 +27,8 @@ export function DaySessions({ rows, isToday = true }: { rows: { item: DayItem; s
   const router = useRouter();
   const [finish, setFinish] = useState<FinishTarget | null>(null);
   const [adhoc, setAdhoc] = useState(false);
+  const [video, setVideo] = useState<VideoTarget | null>(null);
+  const topics = useRows("syllabus_topics");
 
   const start = async (item: DayItem) => {
     if (item.activity === "simulado") { router.push("/simulados?novo=completo"); return; }
@@ -83,6 +88,7 @@ export function DaySessions({ rows, isToday = true }: { rows: { item: DayItem; s
                         <Button size="sm" onClick={() => start(item)} className="flex-1 sm:flex-none"><Play size={14} /> {item.activity === "simulado" ? "Abrir simulado" : status === "em_andamento" ? "Retomar" : "Iniciar"}</Button>
                       )}
                       {item.activity !== "simulado" && <Button size="sm" variant="outline" onClick={() => markDone(item)} className="flex-1 sm:flex-none"><Check size={14} /> Concluir</Button>}
+                      {item.subjectId && <Button size="sm" variant="ghost" onClick={() => { const t = nextTopicFor(topics, item.subjectId!); setVideo({ subjectId: item.subjectId!, topicId: t?.id ?? null, topicTitle: t?.title ?? null }); }} aria-label={`Encontrar videoaulas de ${item.label}`} title="Encontrar videoaulas" data-testid="find-videos"><Clapperboard size={15} /></Button>}
                     </>
                   )}
                 </div>
@@ -93,6 +99,7 @@ export function DaySessions({ rows, isToday = true }: { rows: { item: DayItem; s
       )}
       <FinishDialog target={finish} onClose={() => setFinish(null)} />
       <AdhocDialog open={adhoc} onOpenChange={setAdhoc} />
+      <VideoSearchDialog target={video} onClose={() => setVideo(null)} />
     </Card>
   );
 }

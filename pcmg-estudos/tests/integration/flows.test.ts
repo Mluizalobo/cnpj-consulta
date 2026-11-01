@@ -240,3 +240,23 @@ describe("backup e restauração", () => {
     expect(a.engine.row("subjects", extra.id)).toBeUndefined();
   });
 });
+
+describe("videoaulas na biblioteca pessoal", () => {
+  it("salva sem duplicar, marca assistida sem marcar domínio e registra histórico", async () => {
+    const { a } = await seeded();
+    const topic = a.engine.rows("syllabus_topics").find((t) => t.title === "Crase")!;
+    const v = { youtubeId: "dQw4w9WgXcQ", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", title: "Aula de crase", channelTitle: "Canal" };
+    const r1 = a.actions.saveVideo(v, { subjectId: topic.subject_id, topicId: topic.id });
+    const r2 = a.actions.saveVideo(v, { watchLater: true });
+    expect(r1.id).toBe(r2.id);
+    expect(a.engine.rows("video_lessons")).toHaveLength(1);
+    expect(a.engine.row("video_lessons", r1.id)).toMatchObject({ watch_later: true, syllabus_topic_id: topic.id });
+    a.actions.logVideoOpen(r1.id);
+    a.actions.setVideoWatched(r1.id, true);
+    expect(a.engine.row("video_lessons", r1.id)).toMatchObject({ watch_later: false });
+    expect(a.engine.row("video_lessons", r1.id)?.history).toHaveLength(1);
+    expect(a.engine.row("syllabus_topics", topic.id)?.status).toBe("nao_estudado"); // assistir ≠ dominar
+    a.actions.cacheVideoSearch("crase aula", topic.subject_id, topic.id, []);
+    expect(a.actions.cachedSearch("Crase aula")?.results).toEqual([]);
+  });
+});

@@ -44,7 +44,9 @@ function MocksInner() {
       router.push(`/simulados/prova?id=${mock.id}`);
     } catch (e) { toast.error((e as Error).message); }
   };
-  useEffect(() => { if (params.get("novo") === "completo") { router.replace("/simulados"); void createFull(); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  // abre a criação do simulado quando vem da tela Hoje (?novo=completo); roda só uma vez
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (params.get("novo") === "completo") { router.replace("/simulados"); void createFull(); } }, []);
   const createCustom = () => {
     try {
       const { mock, shortages } = actions.createMock({ kind: "personalizado", total: Number(total), subjectIds: sel.length ? sel : undefined, minutes: minutes ? Number(minutes) : undefined });

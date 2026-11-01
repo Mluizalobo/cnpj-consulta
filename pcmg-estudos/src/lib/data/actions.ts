@@ -1,7 +1,7 @@
 import type {
   Activity, DateKey, Difficulty, ErrorNote, MockDistributionItem, MockExam, MockExamQuestion, Option, Question,
   QuestionAttempt, ReviewItem, StudyPlanSlot, StudySession, Subject, SyllabusTopic, TableName, TopicStatus,
-  UserNotification, UserSettings,
+  UserNotification, UserSettings, VideoLesson, VideoResult,
 } from "../types";
 import type { SyncEngine } from "./sync-engine";
 import { newId, stableId } from "../domain/ids";
@@ -9,7 +9,7 @@ import { addDaysKey, todayKey } from "../domain/dates";
 import { getPhase } from "../domain/phases";
 import type { DayItem } from "../domain/plan";
 import { adjustToStudyDay, buildReviewsForSession, redistributeReviews, reviewState } from "../domain/reviews";
-import { contentHash } from "../domain/text";
+import { contentHash, normalizeText } from "../domain/text";
 import { examDistribution, scaleDistribution, scoreMock, selectMockQuestions, mockElapsed, type Rng } from "../domain/mock";
 import { buildBackup, planMerge, PERSONAL_TABLES, type Backup } from "../domain/backup";
 import type { ParsedImportRow } from "../domain/importer";
@@ -525,6 +525,45 @@ export function createActions(engine: SyncEngine, clock: Clock = systemClock) {
     engine.upsert("user_notifications", unread.map((n) => ({ ...n, read_at: nowIso() })));
   }
 
+  // ------------------------------------------------------------ Videoaulas
+  const videoId = (youtubeId: string) => stableId("video", uid(), youtubeId);
+  function saveVideo(v: { youtubeId: string; url: string; title: string; channelTitle?: string | null; channelId?: string | null; thumbnail?: string | null; durationSeconds?: number | null; publishedAt?: string | null },
+    p: { subjectId?: string | null; topicId?: string | null; source?: VideoLesson["source"]; favorite?: boolean; watchLater?: boolean } = {}): VideoLesson {
+    const id = videoId(v.youtubeId);
+    const cur = engine.row("video_lessons", id);
+    const row: VideoLesson = {
+      ...base(), ...cur, id, youtube_id: v.youtubeId, url: v.url, title: v.title.slice(0, 500), channel_title: v.channelTitle ?? cur?.channel_title ?? null,
+      channel_id: v.channelId ?? cur?.channel_id ?? null, thumbnail_url: v.thumbnail ?? cur?.thumbnail_url ?? null,
+      duration_seconds: v.durationSeconds ?? cur?.duration_seconds ?? null, published_at: v.publishedAt ?? cur?.published_at ?? null,
+      subject_id: p.subjectId !== undefined ? p.subjectId : cur?.subject_id ?? null, syllabus_topic_id: p.topicId !== undefined ? p.topicId : cur?.syllabus_topic_id ?? null,
+      favorite: p.favorite ?? cur?.favorite ?? false, watch_later: p.watchLater ?? cur?.watch_later ?? false, watched_at: cur?.watched_at ?? null,
+      notes: cur?.notes ?? null, source: cur?.source ?? p.source ?? "busca", history: cur?.history ?? [], last_opened_at: cur?.last_opened_at ?? null,
+      created_at: cur?.created_at ?? nowIso(),
+    };
+    engine.upsert("video_lessons", row);
+    return row;
+  }
+  function updateVideo(id: string, changes: Partial<VideoLesson>) { engine.patch("video_lessons", id, changes); }
+  function toggleVideoFavorite(id: string) { const v = engine.row("video_lessons", id); if (v) engine.patch("video_lessons", id, { favorite: !v.favorite }); }
+  function toggleWatchLater(id: string) { const v = engine.row("video_lessons", id); if (v) engine.patch("video_lessons", id, { watch_later: !v.watch_later }); }
+  /** Marca como assistida. NÃO marca o conteúdo como dominado: domínio depende de questões e revisões. */
+  function setVideoWatched(id: string, watched: boolean) {
+    const v = engine.row("video_lessons", id);
+    if (!v) return;
+    engine.patch("video_lessons", id, { watched_at: watched ? nowIso() : null, watch_later: watched ? false : v.watch_later });
+    if (watched && v.syllabus_topic_id) engine.patch("syllabus_topics", v.syllabus_topic_id, { last_studied_at: nowIso() });
+  }
+  function logVideoOpen(id: string) {
+    const v = engine.row("video_lessons", id);
+    if (v) engine.patch("video_lessons", id, { last_opened_at: nowIso(), history: [...(v.history ?? []), nowIso()].slice(-50) });
+  }
+  function deleteVideo(id: string) { engine.remove("video_lessons", id); }
+  function cacheVideoSearch(query: string, subjectId: string | null, topicId: string | null, results: VideoResult[]) {
+    const id = stableId("vsearch", uid(), normalizeText(query));
+    engine.upsert("video_search_cache", { ...base(), id, query, subject_id: subjectId, syllabus_topic_id: topicId, results, fetched_at: nowIso() });
+  }
+  const cachedSearch = (query: string) => engine.row("video_search_cache", stableId("vsearch", uid(), normalizeText(query)));
+
   // ------------------------------------------------------------ Backup
   function exportBackup(): Backup { return buildBackup(engine.state.data as never, clock.now()); }
 
@@ -565,6 +604,7 @@ export function createActions(engine: SyncEngine, clock: Clock = systemClock) {
     updateSettings, addSubject, updateSubject, setPlanSlot, removePlanSlot, replacePlan,
     setTopicStatus, toggleTopicPriority, updateTopic, addTopicStudy, addTopic, deleteTopic, linkQuestionToTopic,
     notify, markNotificationRead, markAllNotificationsRead,
+    saveVideo, updateVideo, toggleVideoFavorite, toggleWatchLater, setVideoWatched, logVideoOpen, deleteVideo, cacheVideoSearch, cachedSearch,
     exportBackup, importBackup,
   };
 }

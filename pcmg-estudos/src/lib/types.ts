@@ -334,6 +334,49 @@ export interface MonitoringLog {
   updated_at: string;
 }
 
+export interface VideoResult {
+  youtubeId: string;
+  url: string;
+  title: string;
+  channelTitle: string;
+  channelId: string;
+  thumbnail: string;
+  durationSeconds: number | null;
+  publishedAt: string | null;
+  viewCount: number | null;
+  score: number;
+  reasons: string[];
+  outdated: boolean;
+}
+
+export interface VideoLesson extends BaseRow {
+  youtube_id: string | null;
+  url: string;
+  title: string;
+  channel_title: string | null;
+  channel_id: string | null;
+  thumbnail_url: string | null;
+  duration_seconds: number | null;
+  published_at: string | null;
+  subject_id: string | null;
+  syllabus_topic_id: string | null;
+  favorite: boolean;
+  watch_later: boolean;
+  watched_at: string | null;
+  notes: string | null;
+  source: "busca" | "manual";
+  history: string[];
+  last_opened_at: string | null;
+}
+
+export interface VideoSearchCache extends BaseRow {
+  query: string;
+  subject_id: string | null;
+  syllabus_topic_id: string | null;
+  results: VideoResult[];
+  fetched_at: string;
+}
+
 export interface TableRowMap {
   profiles: Profile;
   user_settings: UserSettings;
@@ -350,6 +393,8 @@ export interface TableRowMap {
   plan_update_history: PlanUpdateHistory;
   user_notifications: UserNotification;
   syllabus_import_jobs: SyllabusImportJob;
+  video_lessons: VideoLesson;
+  video_search_cache: VideoSearchCache;
   competition_sources: CompetitionSource;
   competition_documents: CompetitionDocument;
   competition_updates: CompetitionUpdate;
@@ -375,6 +420,8 @@ export const TABLES: TableName[] = [
   "plan_update_history",
   "user_notifications",
   "syllabus_import_jobs",
+  "video_lessons",
+  "video_search_cache",
   "competition_sources",
   "competition_documents",
   "competition_updates",

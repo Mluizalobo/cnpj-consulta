@@ -51,7 +51,6 @@ function storeWith() {
   ];
   return s;
 }
-const textPdf = (t: string): Route => ({ type: "application/pdf", body: enc(t) });
 // O fetcher fake entrega texto como "PDF": substituímos a extração quando não é PDF real.
 const pdfFromText = (t: string): Route => ({ type: "text/plain", body: enc(t) });
 

@@ -42,6 +42,7 @@ export const TABLE_LABEL: Record<TableName, string> = {
   question_attempts: "Respostas", error_notebook: "Caderno de erros", mock_exams: "Simulados",
   mock_exam_questions: "Questões de simulados", syllabus_topics: "Edital verticalizado",
   plan_update_history: "Atualizações do plano", user_notifications: "Notificações", syllabus_import_jobs: "Análises de edital",
+  video_lessons: "Videoaulas", video_search_cache: "Buscas de videoaulas",
   competition_sources: "Fontes", competition_documents: "Documentos", competition_updates: "Novidades",
   competition_versions: "Versões do edital", monitoring_logs: "Verificações",
 };

@@ -1,5 +1,9 @@
 "use client";
-import { Pause, Play, RotateCcw, Square, SkipForward, Timer as TimerIcon } from "lucide-react";
+import { Pause, Play, RotateCcw, Square, SkipForward, Timer as TimerIcon, Clapperboard } from "lucide-react";
+import { useState } from "react";
+import { useRows } from "@/components/app/context";
+import { VideoSearchDialog, type VideoTarget } from "@/components/videos/search-dialog";
+import { nextTopicFor } from "@/components/videos/next-topic";
 import { toast } from "sonner";
 import { useApp } from "@/components/app/context";
 import { Button } from "@/components/ui/button";
@@ -32,6 +36,8 @@ export function TimerPanel() {
   const t = useTimer();
   const timer = t.timer;
   const now = useNow(!!timer && timer.runningSince !== null);
+  const topics = useRows("syllabus_topics");
+  const [video, setVideo] = useState<VideoTarget | null>(null);
   if (!timer) return null;
   const block = timer.blocks[timer.index];
   const remaining = blockRemaining(timer, now);
@@ -93,10 +99,12 @@ export function TimerPanel() {
             {timer.index < timer.blocks.length - 1 && <Button variant="outline" onClick={() => t.switchTo(timer.index + 1)}><SkipForward size={16} /> Ir para {BLOCK_LABEL[timer.blocks[timer.index + 1].type].toLowerCase()}</Button>}
             <Button variant="soft" onClick={finish}><Square size={15} /> Encerrar</Button>
             <Button variant="ghost" size="icon" onClick={doReset} aria-label="Reiniciar cronômetro"><RotateCcw size={16} /></Button>
+            {timer.subjectId && <Button variant="ghost" size="sm" onClick={() => { const tp = nextTopicFor(topics, timer.subjectId!); setVideo({ subjectId: timer.subjectId!, topicId: tp?.id ?? null, topicTitle: tp?.title ?? null }); }}><Clapperboard size={15} /> Assistir videoaula</Button>}
           </div>
           <button type="button" onClick={cancel} className="text-xs text-muted underline-offset-2 hover:underline">Descartar sessão</button>
         </div>
       </div>
+      <VideoSearchDialog target={video} onClose={() => setVideo(null)} />
       {t.finishing && timer.kind === "estudo" && (
         <FinishDialog
           target={{ sessionId: timer.sessionId, subjectId: timer.subjectId, label: timer.label, theorySeconds: sec.teoria + sec.revisao, practiceSeconds: sec.questoes }}
