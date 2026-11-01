@@ -21,7 +21,7 @@ export function InstallCard() {
       <CardBody className="space-y-3 text-sm">
         {evt && <Button onClick={async () => { await evt.prompt(); setEvt(null); }}><Smartphone size={16} /> Instalar agora</Button>}
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl border p-3"><p className="mb-1 font-medium">iPhone (Safari)</p><ol className="list-decimal space-y-0.5 pl-4 text-muted"><li>Abra o app no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (quadrado com seta).</li><li>Escolha <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b>.</li></ol><p className="mt-1 text-xs text-muted">Para entrar no app instalado, use o <b>código de 6 dígitos</b> do e-mail.</p></div>
+          <div className="rounded-xl border p-3"><p className="mb-1 font-medium">iPhone (Safari)</p><ol className="list-decimal space-y-0.5 pl-4 text-muted"><li>Abra o app no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (quadrado com seta).</li><li>Escolha <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b>.</li></ol><p className="mt-1 text-xs text-muted">Para entrar no app instalado, crie uma <b>senha</b> abaixo e use “Entrar com senha”.</p></div>
           <div className="rounded-xl border p-3"><p className="mb-1 font-medium">Android (Chrome)</p><ol className="list-decimal space-y-0.5 pl-4 text-muted"><li>Abra o app no <b>Chrome</b>.</li><li>Toque nos <b>três pontos</b> (⋮).</li><li>Escolha <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</li></ol></div>
         </div>
       </CardBody>

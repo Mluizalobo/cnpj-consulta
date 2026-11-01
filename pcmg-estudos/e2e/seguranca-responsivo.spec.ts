@@ -60,3 +60,23 @@ test("APIs do servidor recusam acesso sem login ou sem segredo", async ({ reques
   expect((await request.get("/api/cron/monitorar")).status()).toBe(401);
   expect((await request.get("/api/cron/monitorar", { headers: { Authorization: "Bearer chute" } })).status()).toBe(401);
 });
+
+test("criar senha em Configurações e entrar com senha", async ({ page }) => {
+  await page.clock.install({ time: MONDAY });
+  await login(page, "senha@exemplo.com");
+  await page.goto("/configuracoes");
+  await page.locator("#new-pw").fill("minhasenha123");
+  await page.locator("#new-pw2").fill("minhasenha123");
+  await page.getByTestId("save-password").click();
+  await expect(page.getByText(/Senha salva/)).toBeVisible();
+  await page.evaluate(() => localStorage.removeItem("pcmg-e2e-auth")); // simula sair / outro aparelho
+  await page.goto("/entrar");
+  await page.getByTestId("use-password").click();
+  await page.locator("#email-pw").fill("senha@exemplo.com");
+  await page.locator("#password").fill("errada123");
+  await page.getByRole("button", { name: "Entrar", exact: true }).click();
+  await expect(page.getByText(/E-mail ou senha incorretos/)).toBeVisible();
+  await page.locator("#password").fill("minhasenha123");
+  await page.getByRole("button", { name: "Entrar", exact: true }).click();
+  await expect(page.getByTestId("countdown")).toBeVisible({ timeout: 60_000 });
+});

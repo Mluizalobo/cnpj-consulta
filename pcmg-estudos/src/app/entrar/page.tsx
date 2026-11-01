@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, KeyRound, ArrowLeft } from "lucide-react";
+import { Mail, KeyRound, ArrowLeft, LockKeyhole } from "lucide-react";
 import { z } from "zod";
 import { getAuth } from "@/lib/data/client";
 import { isConfigured } from "@/lib/data/env";
@@ -19,7 +19,8 @@ function LoginInner() {
   const dest = voltar && voltar.startsWith("/") && !voltar.startsWith("//") ? voltar : "/";
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
-  const [step, setStep] = useState<"email" | "code">("email");
+  const [step, setStep] = useState<"email" | "code" | "senha">("email");
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(0);
@@ -51,6 +52,15 @@ function LoginInner() {
     try { await getAuth().verifyCode(email, code.trim()); router.replace(dest); } catch (err) { setError((err as Error).message); } finally { setBusy(false); }
   };
 
+  const loginPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const p = emailSchema.safeParse(email);
+    if (!p.success) { setError(p.error.issues[0].message); return; }
+    if (!password) { setError("Digite a sua senha."); return; }
+    setBusy(true); setError(null);
+    try { await getAuth().signInWithPassword(p.data, password); router.replace(dest); } catch (err) { setError((err as Error).message); } finally { setBusy(false); }
+  };
+
   return (
     <div className="pt-safe grid min-h-dvh place-items-center bg-bg px-4 py-10">
       <div className="w-full max-w-sm animate-fade-in">
@@ -64,12 +74,22 @@ function LoginInner() {
                 <Input id="email" type="email" inputMode="email" autoComplete="email" placeholder="voce@exemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
               </Field>
               <Button type="submit" className="w-full" loading={busy}><Mail size={17} /> Receber link de acesso</Button>
-              <p className="text-xs leading-relaxed text-muted">Sem senha: enviamos um link e um código de 6 dígitos para o seu e-mail.</p>
+              <p className="text-xs leading-relaxed text-muted">Enviamos um link de acesso para o seu e-mail.</p>
+              <button type="button" onClick={() => { setStep("senha"); setError(null); }} className="inline-flex items-center gap-1.5 text-sm font-medium text-primary" data-testid="use-password"><LockKeyhole size={14} /> Entrar com senha</button>
+            </form>
+          ) : step === "senha" ? (
+            <form onSubmit={loginPassword} className="space-y-4" noValidate>
+              <Field label="E-mail" htmlFor="email-pw"><Input id="email-pw" type="email" inputMode="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus /></Field>
+              <Field label="Senha" htmlFor="password" error={error ?? undefined} hint="Crie a senha em Configurações → Conta, depois de entrar pelo link uma vez.">
+                <Input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              </Field>
+              <Button type="submit" className="w-full" loading={busy}><KeyRound size={17} /> Entrar</Button>
+              <button type="button" onClick={() => { setStep("email"); setError(null); }} className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg"><ArrowLeft size={14} /> Receber link por e-mail</button>
             </form>
           ) : (
             <form onSubmit={verify} className="space-y-4" noValidate>
-              <div className="rounded-xl bg-primary-soft p-3 text-sm text-primary">Enviamos um e-mail para <b>{email}</b>. Toque no link <i>ou</i> digite o código abaixo.</div>
-              <Field label="Código de 6 dígitos" htmlFor="code" error={error ?? undefined} hint="No iPhone com o app instalado, use o código: o link abre no Safari.">
+              <div className="rounded-xl bg-primary-soft p-3 text-sm text-primary">Enviamos um e-mail para <b>{email}</b>. <b>Toque no link do e-mail</b> para entrar. Se o e-mail trouxer um código, você também pode digitá-lo abaixo.</div>
+              <Field label="Código (se houver)" htmlFor="code" error={error ?? undefined} hint="No app instalado no iPhone, prefira “Entrar com senha” (crie a senha em Configurações).">
                 <Input id="code" inputMode="numeric" autoComplete="one-time-code" maxLength={8} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} className="tnum text-center text-lg tracking-[0.4em]" autoFocus />
               </Field>
               <Button type="submit" className="w-full" loading={busy}><KeyRound size={17} /> Entrar</Button>
