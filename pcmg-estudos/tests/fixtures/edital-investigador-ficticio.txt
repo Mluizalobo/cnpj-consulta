@@ -1,0 +1,63 @@
+DOCUMENTO FICTÍCIO PARA TESTES AUTOMATIZADOS — NÃO É UM EDITAL REAL
+GOVERNO DO ESTADO DE MINAS GERAIS
+POLÍCIA CIVIL DO ESTADO DE MINAS GERAIS
+EDITAL Nº 01/2026
+CONCURSO PÚBLICO PARA PROVIMENTO DE CARGOS DE INVESTIGADOR DE POLÍCIA I
+A Chefe da Polícia Civil do Estado de Minas Gerais torna pública a abertura de concurso público para o cargo de Investigador de Polícia I, a ser organizado e executado pela Fundação Getulio Vargas (FGV).
+1. DAS VAGAS
+1.1 Serão oferecidas 3.000 (três mil) vagas para o cargo de Investigador de Polícia I.
+2. DOS REQUISITOS PARA INGRESSO
+2.1 Possuir diploma de conclusão de curso de nível superior, em qualquer área, reconhecido pelo MEC.
+2.2 Possuir Carteira Nacional de Habilitação, no mínimo, categoria B.
+2.3 Ter idade mínima de 18 anos completos na data da posse.
+3. DA REMUNERAÇÃO
+3.1 A remuneração inicial do cargo será de R$ 6.543,21.
+4. DAS INSCRIÇÕES
+4.1 As inscrições serão realizadas no período de 05/01/2027 a 05/02/2027, exclusivamente pela internet.
+4.2 A taxa de inscrição será de R$ 130,00.
+\f
+5. DAS ETAPAS DO CONCURSO
+5.1 O concurso será composto das seguintes etapas: prova objetiva; prova de aptidão física; avaliação psicológica; exame médico; investigação social; e curso de formação policial.
+6. DA PROVA OBJETIVA
+6.1 A prova objetiva será realizada em 16/05/2027, com início às 13h, e terá duração de 4 horas e 30 minutos.
+6.2 A prova objetiva terá 80 questões de múltipla escolha, com cinco alternativas cada.
+6.3 QUADRO DE DISTRIBUIÇÃO DAS QUESTÕES
+Disciplina Questões Peso
+Língua Portuguesa 12 1
+Informática 6 1
+Direito Administrativo 6 1
+Direito Constitucional 6 1
+Raciocínio Lógico 6 1
+Legislação Institucional (Lei Complementar nº 129/2013) 6 1
+Direito Penal 6 1
+Direito Processual Penal 6 1
+Medicina Legal 5 1
+Criminologia 5 1
+Legislação Penal Especial 4 1
+Direitos Humanos 4 1
+Noções de Estatística 8 1
+Total 80
+6.4 Será considerado aprovado na prova objetiva o candidato que obtiver, no mínimo, 50% do total de pontos e que não zerar nenhuma disciplina.
+\f
+ANEXO I — CONTEÚDO PROGRAMÁTICO — INVESTIGADOR DE POLÍCIA I
+LÍNGUA PORTUGUESA: 1. Compreensão e interpretação de textos. 2. Ortografia oficial. 3. Acentuação gráfica. 4. Emprego das classes de palavras. 5. Sintaxe da oração e do período. 5.1 Concordância verbal e nominal. 5.2 Regência verbal e nominal. 5.3 Emprego do sinal indicativo de crase. 6. Pontuação. 7. Redação oficial.
+INFORMÁTICA: 1. Sistemas operacionais Windows e Linux. 2. Planilhas eletrônicas. 3. Redes de computadores e internet. 4. Segurança da informação. 5. Computação em nuvem.
+DIREITO ADMINISTRATIVO: 1. Princípios da Administração Pública. 2. Atos administrativos. 3. Poderes administrativos. 4. Responsabilidade civil do Estado. 5. Lei nº 14.133/2021.
+DIREITO CONSTITUCIONAL: 1. Direitos e garantias fundamentais. 2. Organização do Estado. 3. Segurança pública. 4. Constituição do Estado de Minas Gerais.
+RACIOCÍNIO LÓGICO: 1. Lógica proposicional. 2. Equivalências e negações. 3. Análise combinatória.
+LEGISLAÇÃO INSTITUCIONAL: 1. Lei Complementar nº 129/2013 e suas alterações.
+DIREITO PENAL: 1. Aplicação da lei penal. 2. Teoria do crime. 3. Crimes contra a pessoa. 4. Crimes contra o patrimônio. 5. Crimes contra a Administração Pública.
+DIREITO PROCESSUAL PENAL: 1. Inquérito policial. 2. Provas. 3. Prisão em flagrante. 4. Juiz das garantias.
+MEDICINA LEGAL: 1. Traumatologia forense. 2. Tanatologia. 3. Asfixiologia.
+CRIMINOLOGIA: 1. Conceito, objeto e método. 2. Vitimologia. 3. Prevenção do delito.
+LEGISLAÇÃO PENAL ESPECIAL: 1. Lei nº 8.072/1990. 2. Lei nº 11.343/2006. 3. Lei nº 11.340/2006. 4. Lei nº 13.869/2019.
+DIREITOS HUMANOS: 1. Declaração Universal dos Direitos Humanos. 2. Convenção Americana sobre Direitos Humanos.
+NOÇÕES DE ESTATÍSTICA: 1. Estatística descritiva. 2. Medidas de tendência central. 3. Probabilidade.
+\f
+ANEXO II — CRONOGRAMA
+05/01/2027 Início das inscrições
+05/02/2027 Término das inscrições
+10/02/2027 Último dia para pagamento da taxa
+16/05/2027 Aplicação da prova objetiva
+18/05/2027 Divulgação do gabarito preliminar
+DOCUMENTO FICTÍCIO PARA TESTES AUTOMATIZADOS — NÃO É UM EDITAL REAL

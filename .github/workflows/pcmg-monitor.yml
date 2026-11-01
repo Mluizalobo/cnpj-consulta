@@ -1,0 +1,21 @@
+# Verificação extra da Central do Concurso (opcional). O Vercel Cron já faz 1x/dia.
+# Para ativar: no GitHub, Settings > Secrets and variables > Actions, crie:
+#   PCMG_APP_URL   = https://seu-app.vercel.app
+#   PCMG_CRON_SECRET = o mesmo valor de CRON_SECRET configurado na Vercel
+name: Monitorar concurso PCMG
+on:
+  schedule:
+    - cron: "41 1,15,21 * * *" # 3x ao dia (horário UTC)
+  workflow_dispatch: {}
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Chamar verificação
+        env:
+          APP_URL: ${{ secrets.PCMG_APP_URL }}
+          CRON_SECRET: ${{ secrets.PCMG_CRON_SECRET }}
+        run: |
+          if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then echo "Segredos não configurados; nada a fazer."; exit 0; fi
+          curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/monitorar" --max-time 90
