@@ -10,7 +10,8 @@ let sb: SupabaseClient | null = null;
 export function supabase(): SupabaseClient {
   if (!sb) {
     sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" },
+      // "implicit": o link do e-mail funciona mesmo se aberto em outro navegador/aparelho (PKCE exigiria o mesmo navegador).
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "implicit" },
     });
   }
   return sb;
