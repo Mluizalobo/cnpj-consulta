@@ -90,7 +90,7 @@ export default function VideosPage() {
   return (
     <div className="space-y-4 animate-fade-in">
       <PageHeader title="Videoaulas" description="Matéria → tema → subtema → videoaulas, ligadas ao edital vigente" />
-      {apiOn === false && <Card className="flex gap-3 border-warn/40 p-4 text-sm"><TriangleAlert size={17} className="shrink-0 text-warn" /><div>A busca automática está desligada (falta a chave gratuita <b>YOUTUBE_API_KEY</b> no servidor — veja o README). Você ainda pode abrir a busca no YouTube e colar o link da aula: o app preenche título, canal e miniatura.</div></Card>}
+      {apiOn === false && <Card className="flex gap-3 border-warn/40 p-4 text-sm"><TriangleAlert size={17} className="shrink-0 text-warn" /><div>A busca automática está desligada (falta configurar a chave gratuita da API do YouTube no servidor — veja o README, seção Videoaulas). Você ainda pode abrir a busca no YouTube e colar o link da aula: o app preenche título, canal e miniatura.</div></Card>}
       <Segmented value={tab} onChange={setTab} options={[{ value: "materia", label: "Por matéria" }, { value: "minhas", label: `Minhas (${videos.length})` }, { value: "historico", label: "Histórico" }]} />
 
       {tab === "materia" && (
