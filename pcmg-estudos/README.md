@@ -147,13 +147,7 @@ Você vai precisar de um e-mail e de uns 30–40 minutos. Tudo é gratuito.
    3. `pcmg-estudos/supabase/migrations/20261101000200_videos.sql`
 
    Cada um deve terminar com "Success".
-4. **E-mail de login com código** (importante para o iPhone): **Authentication → Emails → Magic Link** (em algumas versões: *Email Templates*). Troque o texto por:
-   ```html
-   <h2>Seu acesso ao Meu Concurso PCMG</h2>
-   <p>Código: <strong>{{ .Token }}</strong></p>
-   <p>Ou toque no link: <a href="{{ .ConfirmationURL }}">Entrar</a></p>
-   ```
-   e salve.
+4. **Entrar no app instalado (iPhone):** o Supabase só permite editar o modelo do e-mail com um servidor de e-mail próprio (SMTP). Por isso o app oferece **senha**: entre a primeira vez pelo link do e-mail, crie uma senha em **Configurações → Senha de acesso** e, no app instalado, use **"Entrar com senha"**.
 5. **Endereços permitidos** (faça depois do Passo 5, quando tiver o endereço da Vercel): **Authentication → URL Configuration**.
    - **Site URL:** `https://SEU-APP.vercel.app`
    - **Redirect URLs:** adicione `https://SEU-APP.vercel.app/**` e `http://localhost:3000/**`.
@@ -220,7 +214,7 @@ O workflow `Monitorar concurso PCMG` passa a rodar 3x por dia. Para aumentar a f
 1. Abra o endereço da Vercel no **Safari**.
 2. Toque em **Compartilhar** (quadrado com seta).
 3. Toque em **Adicionar à Tela de Início** e depois em **Adicionar**.
-4. No app instalado, entre com o **código de 6 dígitos** do e-mail (o link abriria no Safari, fora do app).
+4. No app instalado, toque em **Entrar com senha** (crie a senha antes em **Configurações → Senha de acesso**, entrando pelo link do e-mail no Safari).
 
 **Android (Chrome):** abra o endereço no Chrome, toque nos **⋮** e depois em **Instalar app** (ou **Adicionar à tela inicial**).
 

@@ -6,6 +6,8 @@ export interface AuthClient {
   onChange(cb: (u: AuthUser | null) => void): () => void;
   sendLink(email: string, redirectTo: string): Promise<void>;
   verifyCode(email: string, code: string): Promise<void>;
+  signInWithPassword(email: string, password: string): Promise<void>;
+  setPassword(password: string): Promise<void>;
   signOut(): Promise<void>;
   accessToken(): Promise<string | null>;
 }
@@ -14,7 +16,10 @@ const msg = (e: { message?: string; status?: number } | null) => {
   if (!e) return null;
   const m = e.message ?? "Erro desconhecido";
   if (/rate limit|too many/i.test(m) || e.status === 429) return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
+  if (/invalid login credentials/i.test(m)) return "E-mail ou senha incorretos. Se ainda não criou uma senha, entre pelo link do e-mail e crie em Configurações.";
   if (/expired|invalid/i.test(m)) return "Código inválido ou expirado. Peça um novo link.";
+  if (/password.*(at least|short|weak)/i.test(m)) return "Senha fraca: use pelo menos 8 caracteres.";
+  if (/same.*password|different from the old/i.test(m)) return "A nova senha precisa ser diferente da atual.";
   if (/signups not allowed|not allowed/i.test(m)) return "Cadastro desativado para este e-mail.";
   if (/fetch/i.test(m)) return "Sem conexão com o servidor. Verifique sua internet.";
   return m;
@@ -39,6 +44,14 @@ export function supabaseAuth(sb: SupabaseClient): AuthClient {
       const { error } = await sb.auth.verifyOtp({ email, token: code, type: "email" });
       const m = msg(error); if (m) throw new Error(m);
     },
+    async signInWithPassword(email, password) {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      const m = msg(error); if (m) throw new Error(m);
+    },
+    async setPassword(password) {
+      const { error } = await sb.auth.updateUser({ password });
+      const m = msg(error); if (m) throw new Error(m);
+    },
     async signOut() { await sb.auth.signOut(); },
     async accessToken() { const { data } = await sb.auth.getSession(); return data.session?.access_token ?? null; },
   };
@@ -58,6 +71,17 @@ export function mockAuth(): AuthClient {
       if (code !== "123456") throw new Error("Código inválido ou expirado. Peça um novo link.");
       localStorage.setItem(KEY, JSON.stringify({ id: "00000000-0000-4000-8000-0000000000e2", email }));
       emit();
+    },
+    async signInWithPassword(email, password) {
+      if (localStorage.getItem(KEY + ":pw:" + email) !== password) throw new Error("E-mail ou senha incorretos. Se ainda não criou uma senha, entre pelo link do e-mail e crie em Configurações.");
+      localStorage.setItem(KEY, JSON.stringify({ id: "00000000-0000-4000-8000-0000000000e2", email }));
+      emit();
+    },
+    async setPassword(password) {
+      const u = read();
+      if (!u?.email) throw new Error("Não autenticado");
+      if (password.length < 8) throw new Error("Senha fraca: use pelo menos 8 caracteres.");
+      localStorage.setItem(KEY + ":pw:" + u.email, password);
     },
     async signOut() { localStorage.removeItem(KEY); emit(); },
     async accessToken() { return read() ? "e2e-token" : null; },

@@ -9,6 +9,7 @@ import { DatesCard, GoalsCard, SubjectsCard, WeeklyPlanCard } from "@/components
 import { PreferencesCard } from "@/components/settings/preferences";
 import { BackupCard } from "@/components/settings/backup";
 import { InstallCard } from "@/components/settings/install";
+import { PasswordCard } from "@/components/settings/password";
 
 export default function SettingsPage() {
   const { user, auth } = useApp();
@@ -27,6 +28,7 @@ export default function SettingsPage() {
       <h2 className="pt-3 text-sm font-semibold uppercase tracking-wide text-muted">Dados</h2>
       <BackupCard />
       <InstallCard />
+      <PasswordCard />
       <Card>
         <CardHeader title="Conta" description={user.email ?? ""} />
         <CardBody><Button variant="outline" onClick={async () => { if (await confirm({ title: "Sair da conta?", confirmLabel: "Sair" })) { await auth.signOut(); router.replace("/entrar"); } }}><LogOut size={15} /> Sair</Button></CardBody>
